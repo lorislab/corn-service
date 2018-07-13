@@ -1,4 +1,22 @@
+sudo: required
+
+env:
+  global:
+     - secure: "lgDjHPzO9gx25hZNXdd2t2fMDpNbbKL3AO4HVNdV2zZFXp24lXPsHsXkgGsbKBIhZtNCYVM5b3AupOQfR7utWTEQTdxTpffl6tKdiakkC/i0SLlcZSDFOjvnQrG+1evSUbAo2JdO0g8cNQD8Tm+Pepi3HlRUHRZaxUQArlGrsdJ4qHOWf0luau+ifP19YHR6FjjKKDq+eFA99Qw0kt7+3kZTPNgdqXF8cE4XDi92A6aC1mogy61t0a/Lf9geWQHubMHT0ZCvTH7K30HOfHDtTmyJ45j+fsBqRuanmy8qhr+0fqEBScYOpo5WUCC4muffSJtl6Ic3BZsuQAaZoo/TIur+pC2efenA+Z56/Y8tJ6XRcXDPqGza8gh0q2ldAN1WWcEajj2tYTjcpcr7TELPzbUpVKGAkZrBI4qdrJWQ1tI6aLVuGFx+jF4780WaIeB0Pr6hRMFU/D2+iYKu2vvcfKx0OyFtFUxqP8dimy80BqU9AFpyvJkgN5s2lVzzY5tC9WB1KlYcke81ZmRE/siVGZoSnglsVmKTNNdFLsbTKkQqP3kvZhzQkWlqQBCgZbxPBAKS/XvpEWOFgpBr4Hgl99L+t/SHsaRRGmRWLOuRnqKbuxJoA6QRaHCFv8yHmGJCwbo/U0ngc0MrLDuHQyGnGMniV61YjfVrk8bCWaXHAHE="
+     - secure: "nQqprQcZAG+8VHo+rpQUvj0EgxzhKedluFf6LOTKZDd3CFkChOv4QLN/9mTyWmy/fbs8mrVJS6juH1kDziwD7VweXMJkvPr3S5SIft/bunOUvr704fxYN625fbfnbMczHL4NMehe+jMFsIDtufpODTZo2t3Pwj8szFWibpSSOzS/VeinG2aoWUT5ML1tvs3WqqKqOvqF1+1j4YG8vmtkkhuGKXxWLs/s1TTuqbdzlqEBZXwCSVHycKcTEt2elTxzNcxvoKcjVO0x27TL5+hmkED+t74kTaqosCdTm5SZDRXrjlv1sKgu1yBV4ALVCq3lvRb45wqoNSW1Wy8FLjrRgjb5g34I2f2+Dn7ld+rnAz6mFCVXhXoVkImZWZwp0db6XP6AfD16/WX743MLCUgJfW75daPeL6pByLVCSa2lG+tQu2MAJpR9k93dRnV0WVSxHfw0DjvNeCG717Oue9qyacufk2c8jx374mlg1aIkUYCb9fFQ5+IeKcZOUsKRxBQHPMf2C25sSOZhqxz9G9tPByRa65kGx7UuKoG8F3Rqch64NlajzTjA3dfq7G6JsZEOrr01BtSPTO54aR0VrFSihgQshQ/nv6VTX8I7C+0XeXlDZ9pSlkWtAdyNioEvcsbMRfat8DyXFptUa0vvsIVj0CzdSArCOGfutVDJkn+2E3Y="
+
 language: java
+
 jdk:
   - oraclejdk8
-install: mvn clean install
+  
+services:
+  - docker
+  
+build: 
+    - mvn clean install
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - export REPO=lorislab/corn-service
+    - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+    - docker build --tag=$REPO:$TAG .
+    - docker push $REPO:$TAG
