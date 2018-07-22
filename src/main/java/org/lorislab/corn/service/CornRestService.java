@@ -57,7 +57,7 @@ public class CornRestService {
         if (target == null || target.isEmpty()) {
             target = System.getProperty(PROP_TARGET_DIR, "target/");
         }
-        TARGET = target + UUID.randomUUID().toString();
+        TARGET = target;
         
         String c = System.getenv(PROP_TARGET_DIR);
         if (c == null || c.isEmpty()) {
@@ -72,17 +72,18 @@ public class CornRestService {
     @Produces("application/zip")
     public byte[] createZip(CornRequest request) throws Exception {
 
+        String target = TARGET + UUID.randomUUID().toString();
         try {
-            CornExecutor.execute(request, TARGET);
+            CornExecutor.execute(request, target);
         } catch (ScriptException ex) {
             LOG.log(Level.SEVERE, "Script file: {0}, Column : {1}, Line : {2}, Message : {3}", new Object[]{ex.getFileName(), ex.getColumnNumber(), ex.getLineNumber(), ex.getMessage()});
             throw new RuntimeException("Error: " + ex.getMessage(), ex);
         }
 
         byte[] result = null;
-        java.nio.file.Path path = Paths.get(TARGET);
+        java.nio.file.Path path = Paths.get(target);
         if (Files.exists(path)) {
-            result = CornServiceUtil.createZipData(TARGET);
+            result = CornServiceUtil.createZipData(target);
             if (CLEANUP) {
                 CornServiceUtil.deleteDirectory(path);
             }
