@@ -34,7 +34,7 @@ import org.lorislab.corn.CornRequest;
 
 /**
  * The corn service.
- * 
+ *
  * @author andrej
  */
 @Path("service")
@@ -42,23 +42,41 @@ import org.lorislab.corn.CornRequest;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class CornRestService {
 
+    /**
+     * The logger for this class.
+     */
     private final static Logger LOG = Logger.getLogger(CornRestService.class.getName());
 
+    /**
+     * The target directory system environment property.
+     */
     public final static String PROP_TARGET_DIR = "CORN_TARGET";
 
+    /**
+     * The clean up system environment property.
+     */
     public final static String PROP_CLEAN_UP = "CORN_CLEANUP";
-    
+
+    /**
+     * The target parent directory.
+     */
     public final static String TARGET;
-    
+
+    /**
+     * The clean up flag.
+     */
     public final static boolean CLEANUP;
 
+    /**
+     * The static block.
+     */
     static {
         String target = System.getenv(PROP_TARGET_DIR);
         if (target == null || target.isEmpty()) {
             target = System.getProperty(PROP_TARGET_DIR, "target/");
         }
         TARGET = target;
-        
+
         String c = System.getenv(PROP_TARGET_DIR);
         if (c == null || c.isEmpty()) {
             c = System.getProperty(PROP_CLEAN_UP, "true");
@@ -66,6 +84,13 @@ public class CornRestService {
         CLEANUP = Boolean.parseBoolean(c);
     }
 
+    /**
+     * Creates the zip package as ouput from the CORN service.
+     *
+     * @param request the request.
+     * @return the corresponding data.
+     * @throws Exception if the method fails.
+     */
     @POST
     @Path("zip")
     @Consumes(MediaType.APPLICATION_JSON)

@@ -33,13 +33,22 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * The corn service utility class.
- * 
+ *
  * @author andrej
  */
 public class CornServiceUtil {
 
+    /**
+     * The logger.
+     */
     private final static Logger LOG = Logger.getLogger(CornServiceUtil.class.getName());
-    
+
+    /**
+     * Creates the ZIP data.
+     *
+     * @param dirName the directory.
+     * @return the corresponding data.
+     */
     public static byte[] createZipData(String dirName) {
         try {
             Path path = createZip(dirName);
@@ -49,6 +58,12 @@ public class CornServiceUtil {
         }
     }
 
+    /**
+     * Creates the ZIP data.
+     *
+     * @param dirName the directory.
+     * @return the corresponding path.
+     */
     public static Path createZip(String dirName) {
         Path directory = Paths.get(dirName);
 
@@ -71,6 +86,12 @@ public class CornServiceUtil {
         return result;
     }
 
+    /**
+     * Adds the file to the zip package.
+     *
+     * @param file the file.
+     * @param zipStream the zip stream.
+     */
     private static void addToZipFile(Path file, ZipOutputStream zipStream) {
         String inputFileName = file.toFile().getPath();
         try (FileInputStream inputStream = new FileInputStream(inputFileName)) {
@@ -95,7 +116,13 @@ public class CornServiceUtil {
             throw new RuntimeException("Unable to process " + inputFileName, e);
         }
     }
-    
+
+    /**
+     * Deletes the non empty directory.
+     *
+     * @param directory the directory.
+     * @throws Exception if the method fails.
+     */
     public static void deleteDirectory(Path directory) throws Exception {
         Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
             @Override
