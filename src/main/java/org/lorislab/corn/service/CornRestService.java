@@ -15,6 +15,7 @@
  */
 package org.lorislab.corn.service;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,6 +35,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.lorislab.corn.CornExecutor;
 import org.lorislab.corn.CornRequest;
+import org.lorislab.corn.file.FileObject;
+import org.lorislab.corn.zip.ZipObject;
 
 /**
  * The corn service.
@@ -111,9 +114,9 @@ public class CornRestService {
         byte[] result = null;
         java.nio.file.Path path = Paths.get(target);
         if (Files.exists(path)) {
-            result = CornServiceUtil.createZipData(target);
+            result = createZipData(target);
             if (CLEANUP) {
-                CornServiceUtil.deleteDirectory(path);
+                FileObject.delete(path);
             }
         }
         return result;
@@ -133,4 +136,21 @@ public class CornRestService {
         }
         return result;
     }
+    
+    /**
+     * Creates the ZIP data.
+     *
+     * @param dirName the directory.
+     * @return the corresponding data.
+     */
+    public static byte[] createZipData(String dirName) {
+        try {
+            java.nio.file.Path result = Files.createTempFile("corn", ".zip");
+            java.nio.file.Path dir = Paths.get(dirName);
+            ZipObject.createDiretoryZip(result, dir, dir);
+            return Files.readAllBytes(result);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
+    }    
 }

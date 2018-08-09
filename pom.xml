@@ -42,7 +42,7 @@
         <dependency>
             <groupId>org.lorislab.corn</groupId>
             <artifactId>corn</artifactId>
-            <version>1.2.4</version>
+            <version>1.2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
