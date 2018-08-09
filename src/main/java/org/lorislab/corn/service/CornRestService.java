@@ -15,6 +15,7 @@
  */
 package org.lorislab.corn.service;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -25,8 +26,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.script.ScriptException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.lorislab.corn.CornExecutor;
@@ -112,6 +115,21 @@ public class CornRestService {
             if (CLEANUP) {
                 CornServiceUtil.deleteDirectory(path);
             }
+        }
+        return result;
+    }
+    
+    @GET
+    @Path("data/{data}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.WILDCARD)
+    public Object config(@PathParam("data") String data) throws Exception {
+        Object result = null;
+        java.nio.file.Path path = Paths.get(data);
+        if (Files.exists(path)) {
+            result = new String(Files.readAllBytes(Paths.get(data)), StandardCharsets.UTF_8);
+        } else {
+            LOG.log(Level.WARNING, "The data file {0} does not exists", data);            
         }
         return result;
     }
