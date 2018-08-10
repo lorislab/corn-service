@@ -33,6 +33,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.lorislab.corn.Corn;
 import org.lorislab.corn.CornExecutor;
 import org.lorislab.corn.CornRequest;
 import org.lorislab.corn.file.FileObject;
@@ -125,12 +126,12 @@ public class CornRestService {
     @GET
     @Path("data/{data}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.WILDCARD)
+    @Produces(MediaType.APPLICATION_JSON)
     public Object config(@PathParam("data") String data) throws Exception {
         Object result = null;
         java.nio.file.Path path = Paths.get(data);
         if (Files.exists(path)) {
-            result = new String(Files.readAllBytes(Paths.get(data)), StandardCharsets.UTF_8);
+            result =  Corn.loadJson(data);
         } else {
             LOG.log(Level.WARNING, "The data file {0} does not exists", data);            
         }
